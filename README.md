@@ -52,10 +52,15 @@ O repositório está organizado da seguinte forma:
 
 data/db: Contém os arquivos diversos da estrutura postgres.
 documentacoes: Arquivos de imagem da modelagem e arquitetura do processo, também contém os arquivos com os scripts utilzados para criação das tabelas nos DB e suas cargas de dados.
+
 src/data/output: Caminho parametrizado para gravação do arquivo flat gerado pelo processo.
+
 src/notebooks: Arquivos contendo os notebooks funcionais do projeto.
+
 src/scripts: Contém os arquivos .py que são utilizados durante a execução do pipeline.
-src/run_pipeline.sh: Arquivo orquestrador da automação do pipeline.
+
+src/run_pipeline.sh: Arquivo orquestrador da automação do pipeline. Aqui é possivel parametrizar um novo caminho de saída para o arquivo flat, modificando a seguinte linha:
+FLAT_FILE_OUTPUT_PATH="/home/jovyan/work/data/output"
 
 6. Como Executar o Projeto
 Para rodar o projeto localmente, siga os passos abaixo:
@@ -68,7 +73,6 @@ docker-compose up -d
 
 Para subir os containers e startar automaticamente a execução do pipeline:
 docker-compose run --rm spark-notebook /home/jovyan/work/run_pipeline.sh
-
 Ao final da execução, o arquivo flat .csv será gerado no diretório src/data/output/.
 
 7. Desafios Encontrados e Oportunidades de evolução
