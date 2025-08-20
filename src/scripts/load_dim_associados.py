@@ -47,7 +47,7 @@ def execute_postgres_update(db_details: dict, temp_table_name: str):
         # Query de UPDATE
         update_query = f"""
             UPDATE dim_associado
-            SET fim_vigencia_registro_associado = current_date,
+            SET fim_vigencia_registro_associado = current_timestamp,
                 registro_ativo_associado = false
             WHERE sk_associado IN (SELECT sk_associado FROM {temp_table_name});
         """
@@ -119,8 +119,8 @@ def process_dim_associado_sql(spark: SparkSession):
             idade_atual_associado, 
             estado_civil as estado_civil_associado, 
             escolaridade as escolaridade_associado, 
-            current_date() AS inicio_vigencia_registro_associado, 
-            CAST(NULL AS DATE) AS fim_vigencia_registro_associado, 
+            current_timestamp() AS inicio_vigencia_registro_associado, 
+            CAST(NULL AS TIMESTAMP) AS fim_vigencia_registro_associado,
             true AS registro_ativo_associado
             FROM source_trusted_associado ta
             WHERE NOT EXISTS (
