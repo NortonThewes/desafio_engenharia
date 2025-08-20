@@ -50,29 +50,7 @@ Orquestração/Containerização: Docker
 5. Estrutura do Projeto
 O repositório está organizado da seguinte forma:
 
-.
-├── data/
-│   ├── db/
-│   │   ├── arquivos diversos da estrutura postgres.
-├── documentacoes/
-│   └── Arquiterura.png
-│   └── Modelagem.png
-│   └── scripts_db_origem.txt
-│   └── scripts_db_dw.txt
-├── src/
-│   ├── data/  
-│   │   ├── output/
-│   │   │   └── arquivo_flat.csv
-│   ├── notebooks/
-│       ├── arquivos contendo os notebooks funcionais do projeto.
-│   ├── scripts/
-│       └── arquivos.py do projeto
-│   ├── run_pipeline.sh
-└── README.md
-└── docker-compose.yml
-└── Dockerfile
-
-data/db: Contém os arquivos diversos da estrutura postgres..
+data/db: Contém os arquivos diversos da estrutura postgres.
 documentacoes: Arquivos de imagem da modelagem e arquitetura do processo, também contém os arquivos com os scripts utilzados para criação das tabelas nos DB e suas cargas de dados.
 src/data/output: Caminho parametrizado para gravação do arquivo flat gerado pelo processo.
 src/notebooks: Arquivos contendo os notebooks funcionais do projeto.
@@ -83,22 +61,15 @@ src/run_pipeline.sh: Arquivo orquestrador da automação do pipeline.
 Para rodar o projeto localmente, siga os passos abaixo:
 
 Clone este repositório:
-git clone <URL do seu repositório>
+git clone [<URL do seu repositório>](https://github.com/NortonThewes/desafio_engenharia)
 
-Suba os contêineres Docker (opcional, se usou Docker):
+Para subir os containers e ter acesso a todo o ambiente (postgres + notebooks):
 docker-compose up -d
 
-Execute os scripts SQL:
+Para subir os containers e startar automaticamente a execução do pipeline:
+docker-compose run --rm spark-notebook /home/jovyan/work/run_pipeline.sh
 
-Conecte-se ao seu banco de dados e execute os arquivos em scripts/sql.
-
-Execute o pipeline ETL:
-
-Navegue até o diretório src/etl e execute o script principal.
-
-Exemplo: python processamento_star_schema.py
-
-Ao final da execução, o arquivo flat movimentacoes.csv será gerado no diretório data/.
+Ao final da execução, o arquivo flat .csv será gerado no diretório src/data/output/.
 
 7. Desafios Encontrados e Oportunidades de evolução
 Desafios: O maior desafio para mim foi trabalhar com Spark e Docker, ferramentas que não uso no meu dia a dia. Como o prazo estipulado e o fato de que eu só podia me dedicar no meu tempo livre, acabei focando em resolver os problemas principais. Isso teve um custo: a organização e a padronização do código não ficaram como eu entregaria em um ambiente produtivo.
