@@ -87,7 +87,7 @@ Orquestração: Implementar uma ferramenta de orquestração como Apache Airflow
 Monitoramento: Adicionar logging e alertas para rastrear o status e possíveis falhas do processo.
 Qualidade de Dados: Aumentar a cobertura de testes de qualidade para garantir a integridade dos dados em cada etapa, aqui acabei abordando apenas na etapa da carga da tbela fato.
 Streaming: Migrar a ingestão para um modelo de processamento em tempo real (streaming), utilizando tecnologias como Apache Kafka e Spark Streaming para lidar com dados de forma contínua.
-
+Padrões: Entendo que alguns padrões adotados por mim no projeto, podem mudar conforme um maior entendimento do negócio ou até alinhamentos surgidos em discussões estratégicas do time, como por exemplo: Nomes de colunas, nome de tabelas, tipagens adotadas e tratamentos comuns (upper ou lower para strings?).
 
 
 
