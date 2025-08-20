@@ -1,0 +1,83 @@
+CREATE TABLE associado (
+    id_associado VARCHAR(50) PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    data_nascimento DATE,
+    estado_civil VARCHAR(50),
+    escolaridade VARCHAR(100)
+);
+
+CREATE TABLE conta (
+    id_conta VARCHAR(50) PRIMARY KEY,
+    id_associado VARCHAR(50) REFERENCES associado(id_associado),
+    tipo_conta VARCHAR(50),
+    agencia VARCHAR(20),
+    situacao_conta VARCHAR(50)
+);
+
+CREATE TABLE cartao (
+    id_cartao VARCHAR(50) PRIMARY KEY,
+    id_conta VARCHAR(50) REFERENCES conta(id_conta),
+    bandeira_cartao VARCHAR(50),
+    tipo_cartao VARCHAR(50),
+    data_emissao DATE
+);
+
+CREATE TABLE movimentacao_cartao (
+    id_movimentacao_cartao VARCHAR(50) PRIMARY KEY,
+    id_cartao VARCHAR(50) REFERENCES cartao(id_cartao),
+    valor_movimentacao DECIMAL(10, 2) NOT NULL,
+    data_movimentacao TIMESTAMP NOT NULL
+);
+
+
+
+INSERT INTO associado (id_associado, nome, data_nascimento, estado_civil, escolaridade) VALUES
+('ASSOC-001', 'Ana Silva', '1985-05-10', 'solteira', ' Ensino superior Completo'),
+('ASSOC-002', 'João Oliveira', '1992-11-25', 'Casado ', 'Ensino superior'),
+('ASSOC-003', 'Maria Souza', '1978-02-18', 'DIVORCIADO', 'Ensino Medio'),
+('ASSOC-004', 'Pedro Santos', '1995-07-03', 'solteiro', '  Ensino Superior'),
+('ASSOC-005', 'Julia Lima', '1989-09-12', 'viúvo', 'Ensino médio Completo'),
+('ASSOC-006', 'Carlos Mendes', '1980-04-20', 'casado', 'Ensino Superior'),
+('ASSOC-007', 'Mariana Costa', '1998-08-05', 'Solteira', 'Ensino Superior Completo'),
+('ASSOC-008', 'Ricardo Pereira', '1975-01-30', 'casado', 'Pos-Graduacao'),
+('ASSOC-009', 'Fernanda Alves', '1990-06-22', 'Solteira', 'Ensino Superior'),
+('ASSOC-010', 'Lucas Martins', '1983-12-15', 'Divorciado', 'Ensino superior');
+
+INSERT INTO conta (id_conta, id_associado, tipo_conta, agencia, situacao_conta) VALUES
+('CONTA-101', 'ASSOC-001', 'Corrente', '001-3', 'Ativa'),
+('CONTA-102', 'ASSOC-002', 'Poupança', '002-5', 'Ativa'),
+('CONTA-103', 'ASSOC-003', 'Corrente', '001-3', 'Ativa'),
+('CONTA-104', 'ASSOC-004', 'Corrente', '004-7', 'Ativa'),
+('CONTA-105', 'ASSOC-005', 'Corrente', '005-9', 'Ativa'),
+('CONTA-106', 'ASSOC-006', 'Poupança', '002-5', 'Ativa'),
+('CONTA-107', 'ASSOC-007', 'Corrente', '007-1', 'Ativa'),
+('CONTA-108', 'ASSOC-008', 'Corrente', '008-2', 'Inativa'),
+('CONTA-109', 'ASSOC-009', 'Corrente', '004-7', 'Ativa'),
+('CONTA-110', 'ASSOC-010', 'Corrente', '010-4', 'Ativa');
+
+INSERT INTO cartao (id_cartao, id_conta, bandeira_cartao, tipo_cartao, data_emissao) VALUES
+('CARTAO-201', 'CONTA-101', 'MasterCard', 'Crédito', '2023-01-15'),
+('CARTAO-202', 'CONTA-101', 'Visa', 'Débito', '2023-01-15'),
+('CARTAO-203', 'CONTA-102', 'Visa', 'Crédito', '2022-05-20'),
+('CARTAO-204', 'CONTA-103', 'Elo', 'Débito', '2023-03-10'),
+('CARTAO-205', 'CONTA-104', 'MasterCard', 'Crédito', '2024-06-01'),
+('CARTAO-206', 'CONTA-105', 'Visa', 'Crédito', '2021-08-05'),
+('CARTAO-207', 'CONTA-106', 'Elo', 'Débito', '2022-09-18'),
+('CARTAO-208', 'CONTA-107', 'MasterCard', 'Crédito', '2023-11-25'),
+('CARTAO-209', 'CONTA-108', 'Visa', 'Crédito', '2020-02-14'),
+('CARTAO-210', 'CONTA-109', 'Elo', 'Débito', '2023-07-30'),
+('CARTAO-211', 'CONTA-110', 'MasterCard', 'Crédito', '2024-01-08');
+
+INSERT INTO movimentacao_cartao (id_movimentacao_cartao, id_cartao, valor_movimentacao, data_movimentacao) VALUES
+('MOV-301', 'CARTAO-201', 55.75, '2025-08-14 10:30:00'),
+('MOV-302', 'CARTAO-202', 120.00, '2025-08-14 11:45:00'),
+('MOV-303', 'CARTAO-203', 25.50, '2025-08-14 12:10:00'),
+('MOV-304', 'CARTAO-204', 350.00, '2025-08-14 13:20:00'),
+('MOV-305', 'CARTAO-205', 89.90, '2025-08-14 14:05:00'),
+('MOV-306', 'CARTAO-206', 75.00, '2025-08-14 15:15:00'),
+('MOV-307', 'CARTAO-207', 200.00, '2025-08-14 16:30:00'),
+('MOV-308', 'CARTAO-208', 150.25, '2025-08-14 17:00:00'),
+('MOV-309', 'CARTAO-209', 45.00, '2025-08-14 18:40:00'),
+('MOV-310', 'CARTAO-210', 30.50, '2025-08-14 19:10:00'),
+('MOV-311', 'CARTAO-211', 110.00, '2025-08-14 20:25:00'),
+('MOV-312', 'CARTAO-201', 10.99, '2025-08-15 09:30:00');

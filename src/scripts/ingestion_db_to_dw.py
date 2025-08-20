@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import os
+from pyspark.sql import SparkSession
+
+def get_spark_session():
+    """Cria e retorna uma SparkSession com a configuração JDBC para PostgreSQL."""
+    JAR_PATH = "/opt/spark/jars/postgresql-42.7.3.jar"
+    return (
+        SparkSession.builder.appName("Ingestion DB to Raw Layer DW")
+        .config("spark.jars", JAR_PATH)
+        #.config("spark.driver.extraClassPath", JAR_PATH)
+        .getOrCreate()
+    )
+
+def ingest_data_to_raw(spark: SparkSession):
+    """
+    Ingere dados brutos das tabelas do banco de origem (DB)
+    para a camada Raw (Bronze) do Data Warehouse (DW).
+    """
+    
+    # Configuração do banco de origem (DB)
+    db_source_url = "jdbc:postgresql://db:5432/SiCooperativeDB"
+    db_source_properties = {
+        "user": "user",
+        "password": "password",
+        "driver": "org.postgresql.Driver",
+    }
+    
+    # Configuração do banco de destino (DW)
+    db_dest_url = "jdbc:postgresql://db:5432/SiCooperativeDW"
+    db_dest_properties = {
+        "user": "user",
+        "password": "password",
+        "driver": "org.postgresql.Driver",
+    }
+
+
+    # Lista das tabelas a serem lidas do banco de origem
+    source_tables = ["associado", "conta", "cartao", "movimentacao_cartao"]
+    
+    for table_name in source_tables:
+        print(f"Lendo a tabela '{table_name}' do banco de origem...")
+        
+        # Leitura da tabela do DB
+        df = spark.read.jdbc(url=db_source_url, table=table_name, properties=db_source_properties)
+
+        # Nome da tabela de destino na camada Raw
+        raw_table_name = f"raw_{table_name}"
+        
+        print(f"Escrevendo os dados na tabela de destino '{raw_table_name}'...")
+        
+        # Escrita do DataFrame na tabela Raw do DW
+        df.write.jdbc(url=db_dest_url, table=raw_table_name, mode="overwrite", properties=db_dest_properties)
+        
+        print(f"Dados da tabela '{table_name}' ingeridos com sucesso em '{raw_table_name}'.")
+
+        print("Processamento camada Raw concluída com sucesso.")
+
+if __name__ == "__main__":
+    # Inicia a SparkSession
+    spark = get_spark_session()
+    
+    # Executa a função de ingestão
+    ingest_data_to_raw(spark)
+    
+    # Encerra a SparkSession
+    spark.stop()
+
+
+# In[ ]:
+
+
+
+

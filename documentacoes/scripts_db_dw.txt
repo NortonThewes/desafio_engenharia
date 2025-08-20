@@ -1,0 +1,102 @@
+CREATE TABLE raw_associado (
+    id_associado VARCHAR(50) PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    data_nascimento DATE,
+    estado_civil VARCHAR(50),
+    escolaridade VARCHAR(100)
+);
+CREATE TABLE raw_conta (
+    id_conta VARCHAR(50) PRIMARY KEY,
+    id_associado VARCHAR(50) REFERENCES associado(id_associado),
+    tipo_conta VARCHAR(50),
+    agencia VARCHAR(20),
+    situacao_conta VARCHAR(50),
+	data_criacao_conta DATE
+);
+CREATE TABLE raw_cartao (
+    id_cartao VARCHAR(50) PRIMARY KEY,
+    id_conta VARCHAR(50) REFERENCES conta(id_conta),
+    numero_cartao VARCHAR(50),
+    nome_impresso_cartao VARCHAR(150),
+    bandeira_cartao VARCHAR(50),
+    tipo_cartao VARCHAR(50),
+    data_emissao DATE
+);
+CREATE TABLE raw_movimentacao_cartao (
+    id_movimentacao_cartao VARCHAR(50) PRIMARY KEY,
+    id_cartao VARCHAR(50) REFERENCES cartao(id_cartao),
+    descricao_movimentacao VARCHAR(150),
+    valor_movimentacao DECIMAL(10, 2) NOT NULL,
+    data_movimentacao TIMESTAMP NOT NULL
+);
+
+
+
+CREATE TABLE dim_data (
+    sk_data INT PRIMARY KEY,
+    data DATE,
+    dia INT,
+    mes INT,
+    ano INT,
+    trimestre INT,
+    dia_da_semana VARCHAR(20)
+);
+
+CREATE TABLE dim_cartao (
+    sk_cartao BIGSERIAL PRIMARY KEY,
+    id_cartao VARCHAR(50) NOT NULL UNIQUE,
+    numero_cartao VARCHAR(50),
+    nome_impresso_cartao VARCHAR(150),
+    bandeira_cartao VARCHAR(50),
+    tipo_cartao VARCHAR(50),
+	data_emissao_cartao DATE
+);
+
+CREATE TABLE dim_conta (
+    sk_conta BIGSERIAL PRIMARY KEY,
+    id_conta VARCHAR(50) NOT NULL UNIQUE,
+    tipo_conta VARCHAR(50),
+    agencia_conta VARCHAR(20),
+    situacao_conta VARCHAR(50),
+    data_criacao_conta DATE
+);
+
+CREATE TABLE dim_associado (
+    sk_associado BIGSERIAL PRIMARY KEY,
+    id_associado VARCHAR(50) NOT NULL,
+    nome_associado VARCHAR(255),
+	sobrenome_associado VARCHAR(255),
+    data_nascimento_associado DATE,
+    idade_atual_associado INT,
+    estado_civil_associado VARCHAR(50),
+    escolaridade_associado VARCHAR(100),
+    inicio_vigencia_registro_associado DATE NOT NULL,
+    fim_vigencia_registro_associado DATE,
+    registro_ativo_associado BOOLEAN NOT NULL
+);
+
+CREATE TABLE fato_movimentacao_cartao (
+    id_movimentacao_cartao VARCHAR(50) PRIMARY KEY ,
+    sk_associado BIGINT REFERENCES dim_associado(sk_associado),
+    sk_cartao BIGINT REFERENCES dim_cartao(sk_cartao),
+    sk_conta BIGINT REFERENCES dim_conta(sk_conta),
+    sk_data BIGINT REFERENCES dim_data(sk_data),
+    valor_movimentacao DECIMAL(10, 2),
+    data_hora_movimentacao TIMESTAMP,
+    data_hora_atualizacao_registro TIMESTAMP
+);
+
+
+CARGA DADOS TABELA DIM_DATA
+INSERT INTO dim_data (sk_data, data, dia, mes, ano, trimestre, dia_da_semana)
+SELECT
+    (EXTRACT(YEAR FROM s.a) * 10000 + EXTRACT(MONTH FROM s.a) * 100 + EXTRACT(DAY FROM s.a))::INT AS sk_data,
+    s.a::DATE,
+    EXTRACT(DAY FROM s.a)::INT AS dia,
+    EXTRACT(MONTH FROM s.a)::INT AS mes,
+    EXTRACT(YEAR FROM s.a)::INT AS ano,
+    EXTRACT(QUARTER FROM s.a)::INT AS trimestre,
+    TRIM(TO_CHAR(s.a, 'Day')) AS dia_da_semana
+FROM
+    generate_series('2020-01-01'::DATE, '2026-12-31'::DATE, '1 day'::INTERVAL) AS s(a);
+

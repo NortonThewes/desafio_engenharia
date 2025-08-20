@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Serviço do banco de dados PostgreSQL
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Serviço do Spark (com Jupyter e Python)
+  spark-notebook:
+    build: .
+    container_name: pyspark_notebook
+    restart: always
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./src:/home/jovyan/work
+      - ./data/csv:/home/jovyan/csv
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    command: >
+      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
