@@ -61,7 +61,7 @@ src/run_pipeline.sh: Arquivo orquestrador da automação do pipeline.
 Para rodar o projeto localmente, siga os passos abaixo:
 
 Clone este repositório:
-git clone [<URL do seu repositório>](https://github.com/NortonThewes/desafio_engenharia)
+git clone https://github.com/NortonThewes/desafio_engenharia
 
 Para subir os containers e ter acesso a todo o ambiente (postgres + notebooks):
 docker-compose up -d
