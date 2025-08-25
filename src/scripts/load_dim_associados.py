@@ -18,7 +18,6 @@ JAR_PATH = "/opt/spark/jars/postgresql-42.7.3.jar"
 def get_spark_session():
     """
     Cria e retorna uma SparkSession com a configuração JDBC para PostgreSQL.
-    A configuração do driver extra foi removida pois não é mais necessária.
     """
     return (
         SparkSession.builder.appName("ETL Refined Layer - Dimension Creation with Spark SQL")
@@ -29,9 +28,7 @@ def get_spark_session():
 
 def execute_postgres_update(db_details: dict, temp_table_name: str):
     """
-    Conecta-se ao PostgreSQL usando psycopg2 e executa um UPDATE
-    para desativar registros antigos. Esta abordagem é mais simples e robusta
-    do que usar Py4J para comandos DML.
+    Conecta-se ao PostgreSQL.
     """
     conn = None
     try:
@@ -61,7 +58,7 @@ def execute_postgres_update(db_details: dict, temp_table_name: str):
         conn.commit()
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(f"Ocorreu um erro ao executar o UPDATE via psycopg2: {error}")
+        print(f"Ocorreu um erro ao executar o UPDATE: {error}")
         if conn is not None:
             conn.rollback() 
         raise error
@@ -71,8 +68,7 @@ def execute_postgres_update(db_details: dict, temp_table_name: str):
 
 def process_dim_associado_sql(spark: SparkSession):
     """
-    Lê a tabela trusted_associado e atualiza a dimensão dim_associado
-    aplicando a lógica de SCD Tipo 2 (INSERT/UPDATE) usando Spark SQL.
+    Lê a tabela trusted_associado.
     """
 
     # Configuração de Conexão com o DW
