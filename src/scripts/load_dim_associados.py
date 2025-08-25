@@ -202,7 +202,6 @@ def process_dim_associado_sql(spark: SparkSession):
 
 if __name__ == "__main__":
     spark_session = get_spark_session()
-    # A chamada para addJar foi removida daqui pois não é mais necessária
     process_dim_associado_sql(spark_session)
     spark_session.stop()
 
